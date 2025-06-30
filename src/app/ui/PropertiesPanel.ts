@@ -18,6 +18,9 @@ export class PropertiesPanel {
     this.propertiesContainer = container;
 
     this.setupEventListeners();
+    
+    // Set initial state
+    this.showEmptyState();
   }
 
   private setupEventListeners(): void {

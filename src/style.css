@@ -381,16 +381,17 @@ body {
 }
 
 @media (max-width: 768px) {
-  .properties-panel {
-    position: absolute;
-    left: -20rem;
-    transition: left 0.3s ease;
-    z-index: 200;
-    box-shadow: var(--shadow);
+  .main-content {
+    flex-direction: column;
   }
   
-  .properties-panel.open {
-    left: 0;
+  .properties-panel {
+    position: relative;
+    width: 100%;
+    max-height: 40vh;
+    order: -1; /* Move above canvas */
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
   }
   
   .toolbar h1 {
