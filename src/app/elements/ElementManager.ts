@@ -19,6 +19,7 @@ export interface ElementProperties {
   fontSize?: number;
   fontFamily?: string;
   className?: string;
+  customId?: string;
 }
 
 export class ElementManager {
@@ -135,7 +136,7 @@ export class ElementManager {
       fill: properties.fill || '#f0f0f0',
       stroke: properties.stroke || '#333',
       strokeWidth: properties.strokeWidth || 1,
-      className: properties.className || `element-${this.elementCounter}`,
+      className: properties.className || `${type}-${this.elementCounter}`,
     };
 
     if (type === 'rectangle') {

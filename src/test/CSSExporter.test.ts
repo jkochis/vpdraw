@@ -149,6 +149,29 @@ describe('CSSExporter', () => {
       expect(mockTextArea.value).toContain('.my-custom-class {')
       expect(mockTextArea.value).not.toContain('.element-test-1 {')
     })
+
+    it('should generate both class and ID selectors when custom ID is present', () => {
+      const mockElement = createMockElement({
+        id: 'test-1',
+        type: 'rectangle' as const,
+        properties: {
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 100,
+          className: 'header',
+          customId: 'main-header'
+        }
+      })
+
+      vi.spyOn(elementManager, 'getAllElements').mockReturnValue([mockElement])
+      
+      cssExporter.updateCSS()
+      
+      const css = mockTextArea.value
+      expect(css).toContain('.header {')
+      expect(css).toContain('#main-header {')
+    })
   })
 
   describe('generateHTML', () => {
@@ -175,6 +198,25 @@ describe('CSSExporter', () => {
       expect(html).toContain('<div class="container">')
       expect(html).toContain('<div class="my-rect"></div>')
       expect(html).toContain('</div>')
+    })
+
+    it('should generate HTML with custom IDs when present', () => {
+      const elements = [createMockElement({
+        id: 'rectangle-1',
+        type: 'rectangle' as const,
+        properties: {
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 50,
+          className: 'header',
+          customId: 'main-header'
+        }
+      })]
+
+      const html = cssExporter.generateHTML(elements)
+      
+      expect(html).toContain('<div class="header" id="main-header"></div>')
     })
   })
 

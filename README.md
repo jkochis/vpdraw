@@ -63,6 +63,9 @@ pnpm dev
 ### Property Editing
 - Select any element to view its properties in the right panel
 - Edit position, size, and colors
+- **Custom Class Names**: Assign semantic CSS class names to elements (e.g., "header", "sidebar", "card")
+- **Custom IDs**: Assign unique CSS IDs to elements (e.g., "main-header", "user-profile")
+- **Auto-Generate**: Use the "Generate" buttons to automatically suggest meaningful class names and IDs based on element position and size
 - View real-time viewport unit conversions (vh/vw)
 
 ### Viewport Controls
@@ -81,7 +84,10 @@ pnpm dev
 ### CSS Export
 - Click "Export CSS" to copy responsive CSS to clipboard
 - Generated CSS uses vh/vw units for true responsiveness
-- Includes both CSS and HTML markup
+- **Custom Class Names**: Elements with custom class names are exported with those names
+- **Custom IDs**: Elements with custom IDs generate both class and ID selectors
+- **Semantic CSS**: Automatically generated comments show which custom class names and IDs are in use
+- Includes both CSS and HTML markup with proper class and ID attributes
 
 ### Keyboard Shortcuts
 - `1` - Select tool
