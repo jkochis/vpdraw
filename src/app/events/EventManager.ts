@@ -48,9 +48,6 @@ export class EventManager {
       } else if (e.key === '2') {
         this.toolManager.setTool('rectangle');
         e.preventDefault();
-      } else if (e.key === '3') {
-        this.toolManager.setTool('text');
-        e.preventDefault();
       }
       
       // Copy/Paste and other shortcuts

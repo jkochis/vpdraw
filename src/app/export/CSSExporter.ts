@@ -87,18 +87,6 @@ export class CSSExporter {
       if (properties.fill) {
         css += `  background-color: ${properties.fill};\n`;
       }
-    } else if (type === 'text') {
-      if (properties.fontSize) {
-        // Convert font size to viewport units for responsiveness
-        const fontSizeVH = this.viewportManager.formatViewportUnit(properties.fontSize, 'height');
-        css += `  font-size: ${fontSizeVH};\n`;
-      }
-      if (properties.fontFamily) {
-        css += `  font-family: ${properties.fontFamily};\n`;
-      }
-      css += `  display: flex;\n`;
-      css += `  align-items: center;\n`;
-      css += `  justify-content: center;\n`;
     }
     
     // Border properties
@@ -127,9 +115,6 @@ export class CSSExporter {
       
       if (type === 'rectangle') {
         html += `  <div class="${className}"></div>\n`;
-      } else if (type === 'text') {
-        const text = properties.text || 'Text Element';
-        html += `  <div class="${className}">${text}</div>\n`;
       }
     });
     

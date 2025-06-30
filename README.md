@@ -11,7 +11,7 @@ A modern TypeScript web application for designing responsive layouts using viewp
 ## 🚀 Features
 
 - **Graph Paper Canvas**: Adjustable grid for precise layout design
-- **Drawing Tools**: Rectangle and text tools with real-time editing
+- **Drawing Tools**: Rectangle tool with real-time editing
 - **Multi-Selection**: Select and manipulate multiple elements simultaneously
 - **Viewport Presets**: Quick switching between common device sizes (Desktop, iPad, iPhone, etc.)
 - **Orientation Toggle**: Switch between portrait and landscape modes instantly
@@ -49,7 +49,7 @@ pnpm dev
 
 ### Basic Drawing
 1. The app starts with an Android viewport (360×640) for mobile-first design
-2. Select a tool from the toolbar (Rectangle or Text)
+2. Select the Rectangle tool from the toolbar
 3. Click and drag on the canvas to create elements
 4. Use the Select tool to modify existing elements
 
@@ -62,7 +62,7 @@ pnpm dev
 
 ### Property Editing
 - Select any element to view its properties in the right panel
-- Edit position, size, colors, and text properties
+- Edit position, size, and colors
 - View real-time viewport unit conversions (vh/vw)
 
 ### Viewport Controls
@@ -86,7 +86,6 @@ pnpm dev
 ### Keyboard Shortcuts
 - `1` - Select tool
 - `2` - Rectangle tool  
-- `3` - Text tool
 - `4-9` - Quick preset selection
 - `R` - Toggle portrait/landscape orientation
 - `Delete/Backspace` - Delete selected element(s)
@@ -262,13 +261,11 @@ One of VPDraw's key features is automatic proportional scaling of elements when 
 - **Orientation Changes**: When toggling between portrait and landscape, elements scale to maintain their relative size and position
 - **Preset Switching**: Changing between device presets (e.g., iPhone to iPad) scales all elements proportionally
 - **Manual Resizing**: Adjusting canvas width/height manually also triggers proportional scaling
-- **Font Scaling**: Text elements scale their font size proportionally while maintaining a minimum readable size
 
 ### Smart Scaling Algorithm
 - Calculates scale factors based on width and height ratios
 - Maintains aspect ratios while adapting to new viewport dimensions
 - Preserves grid snapping after scaling operations
-- Uses average scaling for font sizes to maintain readability
 
 ## 🎯 Viewport Units
 

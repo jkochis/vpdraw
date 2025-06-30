@@ -83,11 +83,6 @@ describe('ToolManager', () => {
       expect(toolManager.getCurrentTool()).toBe('rectangle')
     })
 
-    it('should switch to text tool', () => {
-      toolManager.setTool('text')
-      expect(toolManager.getCurrentTool()).toBe('text')
-    })
-
     it('should switch back to select tool', () => {
       toolManager.setTool('rectangle')
       toolManager.setTool('select')

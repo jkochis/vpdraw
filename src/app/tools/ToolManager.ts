@@ -3,7 +3,7 @@ import { ElementManager } from '../elements/ElementManager';
 import type { DrawElement } from '../elements/ElementManager';
 import { GridManager } from '../grid/GridManager';
 
-export type ToolType = 'select' | 'rectangle' | 'text';
+export type ToolType = 'select' | 'rectangle';
 
 export class ToolManager {
   private stage: Konva.Stage;
@@ -41,7 +41,7 @@ export class ToolManager {
 
       if (this.currentTool === 'select') {
         this.elementManager.selectElement(null);
-      } else if (this.currentTool === 'rectangle' || this.currentTool === 'text') {
+      } else if (this.currentTool === 'rectangle') {
         this.startDrawing(adjustedPos);
       }
     });
@@ -81,7 +81,7 @@ export class ToolManager {
   }
 
   private setupToolButtons(): void {
-    const tools = ['select', 'rectangle', 'text'] as const;
+    const tools = ['select', 'rectangle'] as const;
     
     tools.forEach(tool => {
       const button = document.getElementById(`${tool}-tool`);
@@ -91,9 +91,7 @@ export class ToolManager {
         });
       }
     });
-  }
-
-  private startDrawing(pos: { x: number; y: number }): void {
+  }  private startDrawing(pos: { x: number; y: number }): void {
     this.isDrawing = true;
     this.startPoint = pos;
     
@@ -108,19 +106,8 @@ export class ToolManager {
         strokeWidth: 2,
         dash: [5, 5],
       });
-    } else if (this.currentTool === 'text') {
-      this.previewShape = new Konva.Rect({
-        x: pos.x,
-        y: pos.y,
-        width: 0,
-        height: 0,
-        fill: 'rgba(100, 108, 255, 0.1)',
-        stroke: '#646cff',
-        strokeWidth: 1,
-        dash: [3, 3],
-      });
     }
-
+    
     if (this.previewShape) {
       this.layer.add(this.previewShape);
     }
@@ -174,19 +161,10 @@ export class ToolManager {
           stroke: '#333',
           strokeWidth: 1,
         });
-      } else if (this.currentTool === 'text') {
-        element = this.elementManager.createElement('text', {
-          x, y,
-          text: 'Text Element',
-          fontSize: 16,
-          fontFamily: 'Arial',
-        });
-      } else {
-        return;
+        
+        // Select the newly created element
+        this.elementManager.selectElement(element);
       }
-
-      // Select the newly created element
-      this.elementManager.selectElement(element);
     }
 
     // Clean up
@@ -222,7 +200,7 @@ export class ToolManager {
   }
 
   private updateToolButtons(): void {
-    const tools = ['select', 'rectangle', 'text'] as const;
+    const tools = ['select', 'rectangle'] as const;
     
     tools.forEach(tool => {
       const button = document.getElementById(`${tool}-tool`);

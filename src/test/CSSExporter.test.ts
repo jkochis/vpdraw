@@ -129,34 +129,6 @@ describe('CSSExporter', () => {
       expect(css).toContain('border: 2px solid #000000;')
     })
 
-    it('should generate CSS for text elements', () => {
-      const mockElement = createMockElement({
-        id: 'text-1',
-        type: 'text' as const,
-        properties: {
-          x: 100,
-          y: 100,
-          width: 200,
-          height: 50,
-          text: 'Hello World',
-          fontSize: 24,
-          fontFamily: 'Arial, sans-serif'
-        }
-      })
-
-      vi.spyOn(elementManager, 'getAllElements').mockReturnValue([mockElement])
-      
-      cssExporter.updateCSS()
-      
-      const css = mockTextArea.value
-      expect(css).toContain('.element-text-1 {')
-      expect(css).toContain('font-size: 2.22vh;') // 24px converted to vh
-      expect(css).toContain('font-family: Arial, sans-serif;')
-      expect(css).toContain('display: flex;')
-      expect(css).toContain('align-items: center;')
-      expect(css).toContain('justify-content: center;')
-    })
-
     it('should use custom class name if provided', () => {
       const mockElement = createMockElement({
         id: 'test-1',
@@ -203,42 +175,6 @@ describe('CSSExporter', () => {
       expect(html).toContain('<div class="container">')
       expect(html).toContain('<div class="my-rect"></div>')
       expect(html).toContain('</div>')
-    })
-
-    it('should generate HTML for text elements', () => {
-      const elements = [createMockElement({
-        id: 'text-1',
-        type: 'text' as const,
-        properties: {
-          x: 0,
-          y: 0,
-          width: 100,
-          height: 50,
-          text: 'Hello World',
-          className: 'my-text'
-        }
-      })]
-
-      const html = cssExporter.generateHTML(elements)
-      
-      expect(html).toContain('<div class="my-text">Hello World</div>')
-    })
-
-    it('should handle missing text property', () => {
-      const elements = [createMockElement({
-        id: 'text-1',
-        type: 'text' as const,
-        properties: {
-          x: 0,
-          y: 0,
-          width: 100,
-          height: 50
-        }
-      })]
-
-      const html = cssExporter.generateHTML(elements)
-      
-      expect(html).toContain('<div class="element-text-1">Text Element</div>')
     })
   })
 
@@ -333,13 +269,13 @@ describe('CSSExporter', () => {
     it('should generate complete HTML document', () => {
       const mockElement = createMockElement({
         id: 'test-1',
-        type: 'text' as const,
+        type: 'rectangle' as const,
         properties: {
           x: 0,
           y: 0,
           width: 100,
           height: 50,
-          text: 'Test Text'
+          fill: '#f0f0f0'
         }
       })
 
@@ -392,7 +328,7 @@ describe('CSSExporter', () => {
       expect(blobContent).toContain('<style>')
       expect(blobContent).toContain('</style>')
       expect(blobContent).toContain('<body>')
-      expect(blobContent).toContain('Test Text')
+      expect(blobContent).toContain('<div class="element-test-1"></div>')
       expect(blobContent).toContain('</body>')
       expect(blobContent).toContain('</html>')
     })

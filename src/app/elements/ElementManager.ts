@@ -2,7 +2,7 @@ import Konva from 'konva';
 
 export interface DrawElement {
   id: string;
-  type: 'rectangle' | 'text';
+  type: 'rectangle';
   shape: Konva.Shape;
   properties: ElementProperties;
 }
@@ -123,7 +123,7 @@ export class ElementManager {
     this.snapToGrid = enabled;
   }
 
-  public createElement(type: 'rectangle' | 'text', properties: Partial<ElementProperties>): DrawElement {
+  public createElement(type: 'rectangle', properties: Partial<ElementProperties>): DrawElement {
     const id = `element-${++this.elementCounter}`;
     
     let shape: Konva.Shape;
@@ -149,24 +149,6 @@ export class ElementManager {
         strokeWidth: defaultProps.strokeWidth,
         draggable: true,
       });
-    } else if (type === 'text') {
-      defaultProps.text = properties.text || 'Text Element';
-      defaultProps.fontSize = properties.fontSize || 16;
-      defaultProps.fontFamily = properties.fontFamily || 'Arial';
-      
-      shape = new Konva.Text({
-        x: defaultProps.x,
-        y: defaultProps.y,
-        text: defaultProps.text,
-        fontSize: defaultProps.fontSize,
-        fontFamily: defaultProps.fontFamily,
-        fill: defaultProps.stroke || '#333',
-        draggable: true,
-      });
-      
-      // Update width and height based on text dimensions
-      defaultProps.width = shape.width();
-      defaultProps.height = shape.height();
     } else {
       throw new Error(`Unsupported element type: ${type}`);
     }
@@ -489,12 +471,6 @@ export class ElementManager {
     if (properties.stroke !== undefined) shape.stroke(properties.stroke);
     if (properties.strokeWidth !== undefined) shape.strokeWidth(properties.strokeWidth);
 
-    if (element.type === 'text' && shape instanceof Konva.Text) {
-      if (properties.text !== undefined) shape.text(properties.text);
-      if (properties.fontSize !== undefined) shape.fontSize(properties.fontSize);
-      if (properties.fontFamily !== undefined) shape.fontFamily(properties.fontFamily);
-    }
-
     this.layer.batchDraw();
     this.onElementUpdate?.(element);
   }
@@ -552,12 +528,6 @@ export class ElementManager {
         width: props.width * scaleX,
         height: props.height * scaleY,
       };
-
-      // Scale font size for text elements proportionally
-      if (element.type === 'text' && props.fontSize !== undefined) {
-        const avgScale = (scaleX + scaleY) / 2;
-        scaledProps.fontSize = Math.max(8, props.fontSize * avgScale); // Minimum 8px font size
-      }
 
       // Temporarily disable snap to grid to avoid snapping during scaling
       const wasSnapping = this.snapToGrid;

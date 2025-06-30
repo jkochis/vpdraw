@@ -88,8 +88,6 @@ export class PropertiesPanel {
         </div>
       </div>
 
-      ${type === 'text' ? this.getTextProperties(properties) : ''}
-      
       <div class="property-group">
         <h4>Appearance</h4>
         
@@ -115,35 +113,6 @@ export class PropertiesPanel {
     this.attachPropertyEventListeners(element);
   }
 
-  private getTextProperties(properties: ElementProperties): string {
-    return `
-      <div class="property-group">
-        <h4>Text Properties</h4>
-        
-        <div class="property-row">
-          <label>Text:</label>
-          <input type="text" id="prop-text" value="${properties.text || ''}" />
-        </div>
-        
-        <div class="property-row">
-          <label>Font Size:</label>
-          <input type="number" id="prop-fontSize" value="${properties.fontSize || 16}" min="8" max="72" />
-        </div>
-        
-        <div class="property-row">
-          <label>Font Family:</label>
-          <select id="prop-fontFamily">
-            <option value="Arial" ${properties.fontFamily === 'Arial' ? 'selected' : ''}>Arial</option>
-            <option value="Helvetica" ${properties.fontFamily === 'Helvetica' ? 'selected' : ''}>Helvetica</option>
-            <option value="Georgia" ${properties.fontFamily === 'Georgia' ? 'selected' : ''}>Georgia</option>
-            <option value="Times New Roman" ${properties.fontFamily === 'Times New Roman' ? 'selected' : ''}>Times New Roman</option>
-            <option value="Courier New" ${properties.fontFamily === 'Courier New' ? 'selected' : ''}>Courier New</option>
-          </select>
-        </div>
-      </div>
-    `;
-  }
-
   private attachPropertyEventListeners(element: DrawElement): void {
     const inputs = this.propertiesContainer.querySelectorAll('input, select');
     
@@ -155,7 +124,7 @@ export class PropertiesPanel {
         let value: any = target.value;
         
         // Convert numeric properties
-        if (['x', 'y', 'width', 'height', 'strokeWidth', 'fontSize'].includes(propertyName)) {
+        if (['x', 'y', 'width', 'height', 'strokeWidth'].includes(propertyName)) {
           value = parseFloat(value) || 0;
         }
         
