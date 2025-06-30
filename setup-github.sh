@@ -13,7 +13,7 @@ fi
 
 # Add GitHub remote
 echo "🔗 Adding GitHub remote..."
-git remote add origin https://github.com/jessekochis/vpdraw.git
+git remote add origin https://github.com/jkochis/vpdraw.git
 
 # Check current branch and create main if needed
 CURRENT_BRANCH=$(git branch --show-current)
@@ -44,8 +44,8 @@ git push -u origin main
 echo ""
 echo "✅ Repository setup complete!"
 echo ""
-echo "🌐 Your repository: https://github.com/jessekochis/vpdraw"
-echo "📖 GitHub Pages will be available at: https://jessekochis.github.io/vpdraw/"
+echo "🌐 Your repository: https://github.com/jkochis/vpdraw"
+echo "📖 GitHub Pages will be available at: https://jkochis.github.io/vpdraw/"
 echo ""
 echo "📝 Next steps:"
 echo "1. Go to repository settings on GitHub"
