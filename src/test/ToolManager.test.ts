@@ -47,7 +47,7 @@ describe('ToolManager', () => {
     toolManager.setGridManager(mockGridManager)
 
     // Mock document.getElementById for tool buttons
-    vi.spyOn(document, 'getElementById').mockImplementation((_id: string) => {
+    vi.spyOn(document, 'getElementById').mockImplementation(() => {
       return {
         addEventListener: vi.fn(),
         classList: {

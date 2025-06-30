@@ -22,17 +22,24 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "find-unused": "ts-unused-exports tsconfig.json"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
     "@types/node": "^24.0.7",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
     "@vitest/ui": "^3.2.4",
     "canvas": "^3.1.2",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "gh-pages": "^6.3.0",
     "happy-dom": "^18.0.1",
     "jsdom": "^26.1.0",
     "terser": "^5.43.1",
+    "ts-unused-exports": "^11.0.1",
     "typescript": "~5.8.3",
     "vite": "^7.0.0",
     "vitest": "^3.2.4"
