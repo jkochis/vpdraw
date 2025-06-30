@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { ViewportPresets, type ViewportPreset } from '../app/viewport/ViewportPresets'
+import { ViewportPresets } from '../app/viewport/ViewportPresets'
 
 describe('ViewportPresets', () => {
   let viewportPresets: ViewportPresets
