@@ -41,12 +41,12 @@
         <div class="viewport-controls">
           <label>
             Canvas Width:
-            <input type="number" id="canvas-width" min="320" max="4000" value="1920" />
+            <input type="number" id="canvas-width" min="320" max="4000" value="360" />
             <span>px</span>
           </label>
           <label>
             Canvas Height:
-            <input type="number" id="canvas-height" min="240" max="3000" value="1080" />
+            <input type="number" id="canvas-height" min="240" max="3000" value="640" />
             <span>px</span>
           </label>
           <select id="viewport-presets">
@@ -57,7 +57,7 @@
             <option value="768x1024">iPad (768×1024)</option>
             <option value="414x896">iPhone 11 Pro (414×896)</option>
             <option value="375x667">iPhone SE (375×667)</option>
-            <option value="360x640">Android (360×640)</option>
+            <option value="360x640" selected>Android (360×640)</option>
           </select>
           <button id="toggle-orientation" class="viewport-btn" title="Toggle Portrait/Landscape">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">

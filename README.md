@@ -48,9 +48,10 @@ pnpm dev
 ## 🎯 Usage
 
 ### Basic Drawing
-1. Select a tool from the toolbar (Rectangle or Text)
-2. Click and drag on the canvas to create elements
-3. Use the Select tool to modify existing elements
+1. The app starts with an Android viewport (360×640) for mobile-first design
+2. Select a tool from the toolbar (Rectangle or Text)
+3. Click and drag on the canvas to create elements
+4. Use the Select tool to modify existing elements
 
 ### Multi-Selection
 - **Selection Rectangle**: Click and drag on empty canvas to draw a selection rectangle around multiple elements
@@ -65,8 +66,9 @@ pnpm dev
 - View real-time viewport unit conversions (vh/vw)
 
 ### Viewport Controls
+- **Default**: App starts with Android viewport (360×640) for mobile-first design
 - **Canvas Size**: Manually adjust viewport dimensions using width/height inputs
-- **Device Presets**: Select from common device presets (Desktop HD, iPad, iPhone, etc.)
+- **Device Presets**: Select from common device presets (Desktop HD, iPad, iPhone, Android, etc.)
 - **Orientation Toggle**: Click the orientation button or press `R` to switch between portrait/landscape
 - **Proportional Scaling**: When changing viewport size or orientation, all elements automatically scale proportionally to maintain their relative positions and sizes
 - **Real-time Updates**: Canvas and grid update instantly when viewport changes

@@ -57,8 +57,8 @@ export class VPDrawApp {
     const canvasWidthInput = document.getElementById('canvas-width') as HTMLInputElement;
     const canvasHeightInput = document.getElementById('canvas-height') as HTMLInputElement;
     
-    const width = canvasWidthInput ? parseInt(canvasWidthInput.value) : 1920;
-    const height = canvasHeightInput ? parseInt(canvasHeightInput.value) : 1080;
+    const width = canvasWidthInput ? parseInt(canvasWidthInput.value) : 360;
+    const height = canvasHeightInput ? parseInt(canvasHeightInput.value) : 640;
     
     return { width, height };
   }
