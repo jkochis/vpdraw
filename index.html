@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VPDraw - Graph Paper Layout Designer</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="toolbar">
+        <h1>VPDraw</h1>
+        <div class="tool-group">
+          <button id="select-tool" class="tool-btn active" title="Select Tool">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M2,2V8H4V4H8V2H2M2,16V22H8V20H4V16H2M16,2V4H20V8H22V2H16M20,16V20H16V22H22V16H20Z"/>
+            </svg>
+          </button>
+          <button id="rectangle-tool" class="tool-btn" title="Rectangle Tool">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3,3V21H21V3H3M5,5H19V19H5V5Z"/>
+            </svg>
+          </button>
+          <button id="text-tool" class="tool-btn" title="Text Tool">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.5,4L19.66,8.35L18.7,8.61C18.25,7.74 17.79,7.87 17.26,7.87H5.74C5.21,7.87 4.75,7.74 4.3,8.61L3.34,8.35L4.5,4H18.5M12,9.5L17.5,19.5H15.5L14.5,17.5H9.5L8.5,19.5H6.5L12,9.5Z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="grid-controls">
+          <label>
+            Grid Size:
+            <input type="range" id="grid-size" min="10" max="50" value="20" />
+            <span id="grid-size-value">20px</span>
+          </label>
+          <label>
+            <input type="checkbox" id="snap-to-grid" checked />
+            Snap to Grid
+          </label>
+        </div>
+        <div class="viewport-controls">
+          <label>
+            Canvas Width:
+            <input type="number" id="canvas-width" min="320" max="4000" value="1920" />
+            <span>px</span>
+          </label>
+          <label>
+            Canvas Height:
+            <input type="number" id="canvas-height" min="240" max="3000" value="1080" />
+            <span>px</span>
+          </label>
+          <select id="viewport-presets">
+            <option value="">Custom</option>
+            <option value="1920x1080">Desktop HD (1920×1080)</option>
+            <option value="1440x900">Desktop (1440×900)</option>
+            <option value="1366x768">Laptop (1366×768)</option>
+            <option value="768x1024">iPad (768×1024)</option>
+            <option value="414x896">iPhone 11 Pro (414×896)</option>
+            <option value="375x667">iPhone SE (375×667)</option>
+            <option value="360x640">Android (360×640)</option>
+          </select>
+          <button id="toggle-orientation" class="viewport-btn" title="Toggle Portrait/Landscape">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16,4H8A2,2 0 0,0 6,6V18A2,2 0 0,0 8,20H16A2,2 0 0,0 18,18V6A2,2 0 0,0 16,4M16,18H8V6H16V18Z"/>
+            </svg>
+          </button>
+          <button id="reset-viewport" class="viewport-btn" title="Reset to browser size">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="export-controls">
+          <button id="export-css" class="export-btn">Export CSS</button>
+          <button id="clear-canvas" class="clear-btn">Clear</button>
+        </div>
+      </header>
+      
+      <main class="main-content">
+        <aside class="properties-panel">
+          <h3>Properties</h3>
+          <div id="element-properties">
+            <p>Select an element to edit properties</p>
+          </div>
+          
+          <div class="css-output">
+            <h4>CSS Output</h4>
+            <textarea id="css-output" readonly placeholder="CSS will appear here..."></textarea>
+          </div>
+        </aside>
+        
+        <div class="canvas-container">
+          <div class="viewport-info">
+            <span>Viewport: <span id="viewport-size">1920x1080</span></span>
+            <span>Grid: <span id="grid-info">20px</span></span>
+            <span>Canvas: <span id="canvas-info">1920x1080</span></span>
+          </div>
+          <div id="canvas-wrapper">
+            <div id="konva-container"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
