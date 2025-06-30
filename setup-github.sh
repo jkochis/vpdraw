@@ -13,7 +13,7 @@ fi
 
 # Add GitHub remote
 echo "🔗 Adding GitHub remote..."
-git remote add origin https://github.com/jkochis/vpdraw.git
+git remote set-url origin https://github.com/jkochis/vpdraw.git
 
 # Check current branch and create main if needed
 CURRENT_BRANCH=$(git branch --show-current)
