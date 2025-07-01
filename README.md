@@ -114,7 +114,13 @@ src/
 │   ├── grid/                 # Grid management
 │   │   └── GridManager.ts
 │   ├── ui/                   # User interface
-│   │   └── PropertiesPanel.ts
+│   │   ├── PropertiesPanel.ts
+│   │   └── components/       # Web Components
+│   │       ├── PropertyGroup.ts
+│   │       ├── PropertyTextInput.ts
+│   │       ├── PropertyNumberInput.ts
+│   │       ├── PropertyColorInput.ts
+│   │       └── BaseComponent.ts
 │   ├── export/               # CSS generation
 │   │   └── CSSExporter.ts
 │   └── events/               # Event handling
@@ -249,6 +255,22 @@ pnpm test:ui
 - **Mocking**: Comprehensive mocks for Konva.js canvas operations
 - **Coverage Reports**: Detailed code coverage analysis
 - **Performance Testing**: Automated performance benchmarks
+
+### Web Components Architecture
+
+VPDraw uses custom Web Components for the properties panel, providing:
+
+- **`<property-group>`**: Collapsible sections with styled headers
+- **`<property-text-input>`**: Text inputs with validation and auto-generation
+- **`<property-number-input>`**: Number inputs with real-time viewport unit display
+- **`<property-color-input>`**: Color picker inputs for styling properties
+
+**Benefits:**
+- **Encapsulation**: Each component manages its own styling and behavior
+- **Reusability**: Components can be easily reused across the application
+- **Type Safety**: Full TypeScript integration with custom events
+- **Shadow DOM**: Isolated styling prevents CSS conflicts
+- **Custom Events**: Clean communication between components and parent
 
 ### Project Structure
 
