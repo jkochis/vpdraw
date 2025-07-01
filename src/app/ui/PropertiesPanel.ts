@@ -7,6 +7,7 @@ export class PropertiesPanel {
     private elementManager: ElementManager;
     private viewportManager: ViewportManager;
     private propertiesContainer: HTMLElement;
+    private currentElement: DrawElement | null = null;
 
     constructor(elementManager: ElementManager, viewportManager: ViewportManager) {
         this.elementManager = elementManager;
@@ -31,16 +32,23 @@ export class PropertiesPanel {
         });
 
         this.elementManager.addElementUpdateListener((element) => {
-            this.updatePropertiesPanel(element);
+            // Only update the values if it's the same element, don't regenerate the entire panel
+            if (element && this.currentElement && element.id === this.currentElement.id) {
+                this.updateComponentValues(element);
+            } else {
+                this.updatePropertiesPanel(element);
+            }
         });
     }
 
     private updatePropertiesPanel(element: DrawElement | null): void {
         if (!element) {
+            this.currentElement = null;
             this.showEmptyState();
             return;
         }
 
+        this.currentElement = element;
         this.showElementProperties(element);
     }
 
@@ -51,95 +59,162 @@ export class PropertiesPanel {
     private showElementProperties(element: DrawElement): void {
         const { properties, type } = element;
 
-        this.propertiesContainer.innerHTML = `
-            <property-group title="Element: ${type.charAt(0).toUpperCase() + type.slice(1)}">
-                <div style="font-size: 12px; opacity: 0.7; margin-bottom: 10px;">System ID: ${element.id}</div>
-            </property-group>
+        // Clear the container
+        this.propertiesContainer.innerHTML = '';
 
-            <property-group title="🏷️ Element Identity">
-                <property-text-input 
-                    id="customId-input"
-                    label="Custom ID"
-                    placeholder="e.g., main-header, user-card"
-                    pattern="[a-zA-Z][a-zA-Z0-9_-]*"
-                    title="ID should start with a letter and contain only letters, numbers, hyphens, and underscores"
-                    help-text="Unique identifier for CSS/HTML"
-                    value="${properties.customId || ''}"
-                    show-generate="true">
-                </property-text-input>
-                
-                <property-text-input 
-                    id="className-input"
-                    label="CSS Class"
-                    placeholder="e.g., header, sidebar, card"
-                    pattern="[a-zA-Z][a-zA-Z0-9_-]*"
-                    title="Class name should start with a letter and contain only letters, numbers, hyphens, and underscores"
-                    help-text="Reusable style class"
-                    value="${properties.className || ''}"
-                    show-generate="true">
-                </property-text-input>
-            </property-group>
+        // Create and add properties header
+        const header = document.createElement('properties-header');
+        this.propertiesContainer.appendChild(header);
 
-            <property-group title="Position & Size">
-                <property-number-input 
-                    id="x-input"
-                    label="X"
-                    value="${Math.round(properties.x)}"
-                    units="${this.viewportManager.formatViewportUnit(properties.x, 'width')}">
-                </property-number-input>
-                
-                <property-number-input 
-                    id="y-input"
-                    label="Y"
-                    value="${Math.round(properties.y)}"
-                    units="${this.viewportManager.formatViewportUnit(properties.y, 'height')}">
-                </property-number-input>
-                
-                <property-number-input 
-                    id="width-input"
-                    label="Width"
-                    value="${Math.round(properties.width)}"
-                    units="${this.viewportManager.formatViewportUnit(properties.width, 'width')}">
-                </property-number-input>
-                
-                <property-number-input 
-                    id="height-input"
-                    label="Height"
-                    value="${Math.round(properties.height)}"
-                    units="${this.viewportManager.formatViewportUnit(properties.height, 'height')}">
-                </property-number-input>
-                
-                <div style="margin-top: 0.5rem;">
-                    <small style="opacity: 0.7;">💡 Grid snapping is ${(document.getElementById('snap-to-grid') as HTMLInputElement)?.checked ? 'enabled' : 'disabled'}</small>
-                </div>
-            </property-group>
+        // Create identity group
+        const identityGroup = document.createElement('property-group');
+        identityGroup.setAttribute('title', '🏷️ Element Identity');
+        
+        const customIdInput = document.createElement('property-text-input');
+        customIdInput.id = 'customId-input';
+        customIdInput.setAttribute('label', 'Custom ID');
+        customIdInput.setAttribute('placeholder', 'e.g., main-header, user-card');
+        customIdInput.setAttribute('pattern', '[a-zA-Z][a-zA-Z0-9_-]*');
+        customIdInput.setAttribute('title', 'ID should start with a letter and contain only letters, numbers, hyphens, and underscores');
+        customIdInput.setAttribute('help-text', 'Unique identifier for CSS/HTML');
+        customIdInput.setAttribute('value', properties.customId || '');
+        customIdInput.setAttribute('show-generate', 'true');
+        identityGroup.appendChild(customIdInput);
+        
+        const classNameInput = document.createElement('property-text-input');
+        classNameInput.id = 'className-input';
+        classNameInput.setAttribute('label', 'CSS Class');
+        classNameInput.setAttribute('placeholder', 'e.g., header, sidebar, card');
+        classNameInput.setAttribute('pattern', '[a-zA-Z][a-zA-Z0-9_-]*');
+        classNameInput.setAttribute('title', 'Class name should start with a letter and contain only letters, numbers, hyphens, and underscores');
+        classNameInput.setAttribute('help-text', 'Reusable style class');
+        classNameInput.setAttribute('value', properties.className || '');
+        classNameInput.setAttribute('show-generate', 'true');
+        identityGroup.appendChild(classNameInput);
+        
+        this.propertiesContainer.appendChild(identityGroup);
 
-            <property-group title="Appearance">
-                ${type === 'rectangle' ? `
-                    <property-color-input 
-                        id="fill-input"
-                        label="Fill"
-                        value="${properties.fill || '#f0f0f0'}">
-                    </property-color-input>
-                ` : ''}
-                
-                <property-color-input 
-                    id="stroke-input"
-                    label="Border Color"
-                    value="${properties.stroke || '#333333'}">
-                </property-color-input>
-                
-                <property-number-input 
-                    id="strokeWidth-input"
-                    label="Border Width"
-                    value="${properties.strokeWidth || 1}"
-                    min="0"
-                    max="10">
-                </property-number-input>
-            </property-group>
-        `;
+        // Create position & size group
+        const positionGroup = document.createElement('property-group');
+        positionGroup.setAttribute('title', '📏 Position & Size');
+        
+        const xInput = document.createElement('property-number-input');
+        xInput.id = 'x-input';
+        xInput.setAttribute('label', 'X');
+        xInput.setAttribute('value', Math.round(properties.x).toString());
+        xInput.setAttribute('units', this.viewportManager.formatViewportUnit(properties.x, 'width'));
+        positionGroup.appendChild(xInput);
+        
+        const yInput = document.createElement('property-number-input');
+        yInput.id = 'y-input';
+        yInput.setAttribute('label', 'Y');
+        yInput.setAttribute('value', Math.round(properties.y).toString());
+        yInput.setAttribute('units', this.viewportManager.formatViewportUnit(properties.y, 'height'));
+        positionGroup.appendChild(yInput);
+        
+        const widthInput = document.createElement('property-number-input');
+        widthInput.id = 'width-input';
+        widthInput.setAttribute('label', 'Width');
+        widthInput.setAttribute('value', Math.round(properties.width).toString());
+        widthInput.setAttribute('units', this.viewportManager.formatViewportUnit(properties.width, 'width'));
+        positionGroup.appendChild(widthInput);
+        
+        const heightInput = document.createElement('property-number-input');
+        heightInput.id = 'height-input';
+        heightInput.setAttribute('label', 'Height');
+        heightInput.setAttribute('value', Math.round(properties.height).toString());
+        heightInput.setAttribute('units', this.viewportManager.formatViewportUnit(properties.height, 'height'));
+        positionGroup.appendChild(heightInput);
+        
+        const gridStatus = document.createElement('grid-status');
+        positionGroup.appendChild(gridStatus);
+        
+        this.propertiesContainer.appendChild(positionGroup);
+
+        // Create appearance group
+        const appearanceGroup = document.createElement('property-group');
+        appearanceGroup.setAttribute('title', '🎨 Appearance');
+        
+        // Add fill input for rectangles
+        if (type === 'rectangle') {
+            const fillInput = document.createElement('property-color-input');
+            fillInput.id = 'fill-input';
+            fillInput.setAttribute('label', 'Fill');
+            fillInput.setAttribute('value', properties.fill || '#f0f0f0');
+            appearanceGroup.appendChild(fillInput);
+        }
+        
+        const strokeInput = document.createElement('property-color-input');
+        strokeInput.id = 'stroke-input';
+        strokeInput.setAttribute('label', 'Border Color');
+        strokeInput.setAttribute('value', properties.stroke || '#333333');
+        appearanceGroup.appendChild(strokeInput);
+        
+        const strokeWidthInput = document.createElement('property-number-input');
+        strokeWidthInput.id = 'strokeWidth-input';
+        strokeWidthInput.setAttribute('label', 'Border Width');
+        strokeWidthInput.setAttribute('value', (properties.strokeWidth || 1).toString());
+        strokeWidthInput.setAttribute('min', '0');
+        strokeWidthInput.setAttribute('max', '10');
+        appearanceGroup.appendChild(strokeWidthInput);
+        
+        this.propertiesContainer.appendChild(appearanceGroup);
 
         this.attachPropertyEventListeners(element);
+        this.attachCollapseControls();
+    }
+
+    private updateComponentValues(element: DrawElement): void {
+        const { properties } = element;
+        
+        // Map component IDs to property names - same as in attachPropertyEventListeners
+        const componentPropertyMap: Record<string, string> = {
+            'customId-input': 'customId',
+            'className-input': 'className',
+            'x-input': 'x',
+            'y-input': 'y',
+            'width-input': 'width',
+            'height-input': 'height',
+            'fill-input': 'fill',
+            'stroke-input': 'stroke',
+            'strokeWidth-input': 'strokeWidth'
+        };
+
+        // Update each component's value
+        Object.keys(componentPropertyMap).forEach(componentId => {
+            // Skip the component that triggered the update to prevent overwriting user input
+            if ((this as any)._updatingComponent === componentId) {
+                return;
+            }
+            
+            const component = this.propertiesContainer.querySelector(`#${componentId}`);
+            const propertyName = componentPropertyMap[componentId];
+            
+            if (component) {
+                const propertyValue = (properties as any)[propertyName];
+                
+                // Update the component value
+                if (propertyValue !== undefined) {
+                    // For number inputs, round the value
+                    if (['x', 'y', 'width', 'height', 'strokeWidth'].includes(propertyName)) {
+                        const roundedValue = Math.round(propertyValue);
+                        component.setAttribute('value', roundedValue.toString());
+                        (component as any).value = roundedValue;
+                        // Update units display for position/size inputs
+                        if (['x', 'y', 'width', 'height'].includes(propertyName)) {
+                            const dimension = propertyName === 'x' || propertyName === 'width' ? 'width' : 'height';
+                            const units = this.viewportManager.formatViewportUnit(propertyValue, dimension);
+                            component.setAttribute('units', units);
+                            (component as any).units = units;
+                        }
+                    } else {
+                        const stringValue = propertyValue || '';
+                        component.setAttribute('value', stringValue);
+                        (component as any).value = stringValue;
+                    }
+                }
+            }
+        });
     }
 
     private attachPropertyEventListeners(element: DrawElement): void {
@@ -179,7 +254,11 @@ export class PropertiesPanel {
                     // Update element properties
                     const updates: Partial<ElementProperties> = {};
                     (updates as any)[propertyName] = value;
+                    
+                    // Temporarily store which component triggered the update to avoid overwriting it
+                    (this as any)._updatingComponent = componentId;
                     this.elementManager.updateElementProperties(element.id, updates);
+                    delete (this as any)._updatingComponent;
 
                     // Update units display for numeric inputs
                     if (['x', 'y', 'width', 'height'].includes(propertyName)) {
@@ -203,11 +282,36 @@ export class PropertiesPanel {
                         // Trigger update
                         const updates: Partial<ElementProperties> = {};
                         (updates as any)[propertyName] = newValue;
+                        
+                        // Temporarily store which component triggered the update
+                        (this as any)._updatingComponent = componentId;
                         this.elementManager.updateElementProperties(element.id, updates);
+                        delete (this as any)._updatingComponent;
                     }
                 });
             }
         });
+    }
+
+    private attachCollapseControls(): void {
+        // Add event listeners for the properties header component events
+        const header = this.propertiesContainer.querySelector('properties-header');
+        
+        if (header) {
+            header.addEventListener('expand-all', () => {
+                const propertyGroups = this.propertiesContainer.querySelectorAll('property-group');
+                propertyGroups.forEach(group => {
+                    (group as any).expand();
+                });
+            });
+            
+            header.addEventListener('collapse-all', () => {
+                const propertyGroups = this.propertiesContainer.querySelectorAll('property-group');
+                propertyGroups.forEach(group => {
+                    (group as any).collapse();
+                });
+            });
+        }
     }
 
     private sanitizeClassName(className: string): string {

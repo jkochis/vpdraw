@@ -3,6 +3,9 @@ import './PropertyGroup';
 import './PropertyTextInput';
 import './PropertyNumberInput';
 import './PropertyColorInput';
+import './PropertiesHeader';
+import './ElementInfo';
+import './GridStatus';
 
 // Export types for TypeScript
 export { PropertyGroupComponent } from './PropertyGroup';

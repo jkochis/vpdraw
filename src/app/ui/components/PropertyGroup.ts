@@ -1,66 +1,90 @@
+import templateHtml from './PropertyGroup.html?raw';
+import styles from './PropertyGroup.css?raw';
+
 export class PropertyGroupComponent extends HTMLElement {
   private titleElement: HTMLElement;
+  private contentElement: HTMLElement;
+  private toggleIcon: HTMLElement;
+  private isCollapsed = false;
 
   constructor() {
     super();
     const shadowRoot = this.attachShadow({ mode: 'open' });
     
     shadowRoot.innerHTML = `
-      <style>
-        :host {
-          display: block;
-          margin-bottom: 1.5rem;
-        }
-        
-        .property-group {
-          background: white;
-          border-radius: 0.5rem;
-          padding: 1rem;
-          border: 1px solid #e5e7eb;
-        }
-        
-        .group-title {
-          margin: 0 0 1rem 0;
-          font-size: 1rem;
-          font-weight: 600;
-          color: #1f2937;
-          border-bottom: 1px solid #e5e7eb;
-          padding-bottom: 0.5rem;
-        }
-        
-        .group-content {
-          display: flex;
-          flex-direction: column;
-          gap: 0.75rem;
-        }
-      </style>
-      
-      <div class="property-group">
-        <h4 class="group-title"></h4>
-        <div class="group-content">
-          <slot></slot>
-        </div>
-      </div>
+      <style>${styles}</style>
+      ${templateHtml}
     `;
     
     this.titleElement = shadowRoot.querySelector('.group-title')!;
-  }
-
-  connectedCallback() {
+    this.contentElement = shadowRoot.querySelector('.group-content')!;
+    this.toggleIcon = shadowRoot.querySelector('.toggle-icon')!;
+    
+    // Add click handler for toggling
+    shadowRoot.querySelector('.group-header')!.addEventListener('click', () => {
+      this.toggle();
+    });
+    
     this.updateTitle();
+    this.updateCollapsedState();
   }
 
   static get observedAttributes() {
-    return ['title'];
+    return ['title', 'collapsed'];
   }
 
-  attributeChangedCallback() {
-    this.updateTitle();
+  attributeChangedCallback(name: string, _oldValue: string | null, _newValue: string | null) {
+    if (name === 'title') {
+      this.updateTitle();
+    } else if (name === 'collapsed') {
+      this.updateCollapsedState();
+    }
   }
 
   private updateTitle() {
-    const title = this.getAttribute('title') || '';
-    this.titleElement.textContent = title;
+    if (this.titleElement) {
+      this.titleElement.textContent = this.getAttribute('title') || '';
+    }
+  }
+
+  private updateCollapsedState() {
+    this.isCollapsed = this.hasAttribute('collapsed');
+    this.contentElement.classList.toggle('collapsed', this.isCollapsed);
+    this.toggleIcon.classList.toggle('collapsed', this.isCollapsed);
+  }
+
+  private toggle() {
+    this.isCollapsed = !this.isCollapsed;
+    
+    if (this.isCollapsed) {
+      this.setAttribute('collapsed', '');
+    } else {
+      this.removeAttribute('collapsed');
+    }
+    
+    this.updateCollapsedState();
+    
+    this.dispatchEvent(new CustomEvent('toggle', {
+      detail: { collapsed: this.isCollapsed },
+      bubbles: true
+    }));
+  }
+
+  // Public API methods
+  public collapse() {
+    if (!this.isCollapsed) {
+      this.toggle();
+    }
+  }
+
+  public expand() {
+    if (this.isCollapsed) {
+      this.toggle();
+    }
+  }
+
+  public get collapsed() {
+    return this.isCollapsed;
   }
 }
 

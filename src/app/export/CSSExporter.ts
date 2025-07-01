@@ -1,5 +1,5 @@
 import { ElementManager } from '../elements/ElementManager';
-import type { DrawElement } from '../elements/ElementManager';
+import type { DrawElement, ElementProperties } from '../elements/ElementManager';
 import { ViewportManager } from '../viewport/ViewportManager';
 import { ViewportPresets } from '../viewport/ViewportPresets';
 
@@ -73,8 +73,27 @@ export class CSSExporter {
   private generateElementCSS(element: DrawElement): string {
     const { properties, type } = element;
     const className = properties.className || `element-${element.id}`;
+    const customId = properties.customId;
     
-    let css = `.${className} {\n`;
+    let css = '';
+    
+    // Generate CSS for class selector
+    css += `.${className} {\n`;
+    css += this.generateCSSProperties(properties, type);
+    css += `}\n`;
+    
+    // Generate CSS for ID selector if custom ID exists
+    if (customId) {
+      css += `\n#${customId} {\n`;
+      css += this.generateCSSProperties(properties, type);
+      css += `}\n`;
+    }
+    
+    return css;
+  }
+
+  private generateCSSProperties(properties: ElementProperties, type: string): string {
+    let css = '';
     
     // Position and size using viewport units
     css += `  position: absolute;\n`;
@@ -113,12 +132,17 @@ export class CSSExporter {
     elements.forEach(element => {
       const { properties, type } = element;
       const className = properties.className || `element-${element.id}`;
+      const customId = properties.customId;
+      
+      // Build class and id attributes
+      let classAttr = `class="${className}"`;
+      let idAttr = customId ? ` id="${customId}"` : '';
       
       if (type === 'rectangle') {
-        html += `  <div class="${className}"></div>\n`;
+        html += `  <div ${classAttr}${idAttr}></div>\n`;
       } else if (type === 'text') {
         const text = properties.text || 'Text Element';
-        html += `  <div class="${className}">${text}</div>\n`;
+        html += `  <div ${classAttr}${idAttr}>${text}</div>\n`;
       }
     });
     
