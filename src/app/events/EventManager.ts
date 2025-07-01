@@ -28,8 +28,36 @@ export class EventManager {
     this.setupKeyboardShortcuts();
   }
 
+  private isTypingInInput(): boolean {
+    let activeElement = document.activeElement;
+    
+    // Traverse through Shadow DOM to find the actual focused element
+    while (activeElement && activeElement.shadowRoot && activeElement.shadowRoot.activeElement) {
+      activeElement = activeElement.shadowRoot.activeElement;
+    }
+    
+    if (activeElement) {
+      const tagName = activeElement.tagName.toLowerCase();
+      const isFormInput = ['input', 'textarea', 'select'].includes(tagName);
+      const isContentEditable = activeElement.getAttribute('contenteditable') === 'true';
+      
+      // Also check for ARIA textbox role
+      const role = activeElement.getAttribute('role');
+      const isAriaTextbox = role === 'textbox' || role === 'searchbox';
+      
+      return isFormInput || isContentEditable || isAriaTextbox;
+    }
+    
+    return false;
+  }
+
   private setupKeyboardShortcuts(): void {
     document.addEventListener('keydown', (e) => {
+      // Don't trigger shortcuts when user is typing in input fields
+      if (this.isTypingInInput()) {
+        return;
+      }
+      
       // Delete selected element
       if (e.key === 'Delete' || e.key === 'Backspace') {
         const selectedElements = this.elementManager.getSelectedElements();

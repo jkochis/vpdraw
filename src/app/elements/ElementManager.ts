@@ -82,6 +82,9 @@ export class ElementManager {
       // Notify about updates for the first selected element
       const firstElement = Array.from(this.selectedElements)[0];
       if (firstElement) {
+        // Notify all listeners
+        this.notifyElementUpdate(firstElement);
+        // Legacy support
         this.onElementUpdate?.(firstElement);
       }
     });
@@ -201,6 +204,9 @@ export class ElementManager {
       // Update properties
       element.properties.x = x;
       element.properties.y = y;
+      // Notify all listeners
+      this.notifyElementUpdate(element);
+      // Legacy support
       this.onElementUpdate?.(element);
     });
 
@@ -240,6 +246,9 @@ export class ElementManager {
       shape.x(x);
       shape.y(y);
       
+      // Notify all listeners
+      this.notifyElementUpdate(element);
+      // Legacy support
       this.onElementUpdate?.(element);
     });
   }
@@ -327,6 +336,9 @@ export class ElementManager {
     this.selectedElements.clear();
     this.transformer.nodes([]);
     this.layer.batchDraw();
+    // Notify all listeners
+    this.notifySelectionChange(null);
+    // Legacy support
     this.onSelectionChange?.(null);
   }
 
@@ -353,7 +365,11 @@ export class ElementManager {
     
     // Notify about selection change
     const selectedArray = Array.from(this.selectedElements);
-    this.onSelectionChange?.(selectedArray.length === 1 ? selectedArray[0] : null);
+    const selectedElement = selectedArray.length === 1 ? selectedArray[0] : null;
+    // Notify all listeners
+    this.notifySelectionChange(selectedElement);
+    // Legacy support
+    this.onSelectionChange?.(selectedElement);
   }
 
   public selectMultipleElements(elements: DrawElement[]): void {
@@ -374,7 +390,11 @@ export class ElementManager {
     }
     
     // Notify about selection change
-    this.onSelectionChange?.(elements.length === 1 ? elements[0] : null);
+    const selectedElement = elements.length === 1 ? elements[0] : null;
+    // Notify all listeners
+    this.notifySelectionChange(selectedElement);
+    // Legacy support
+    this.onSelectionChange?.(selectedElement);
   }
 
   private showMultiSelectionNotification(count: number): void {
@@ -430,6 +450,9 @@ export class ElementManager {
     }
 
     this.layer.batchDraw();
+    // Notify all listeners
+    this.notifySelectionChange(element);
+    // Legacy support
     this.onSelectionChange?.(element);
   }
 
@@ -473,6 +496,9 @@ export class ElementManager {
     if (properties.strokeWidth !== undefined) shape.strokeWidth(properties.strokeWidth);
 
     this.layer.batchDraw();
+    // Notify all listeners
+    this.notifyElementUpdate(element);
+    // Legacy support
     this.onElementUpdate?.(element);
   }
 
@@ -548,7 +574,27 @@ export class ElementManager {
     this.layer.batchDraw();
   }
 
-  // Event callbacks
+  // Event callbacks - support multiple listeners
+  private selectionChangeListeners: Array<(element: DrawElement | null) => void> = [];
+  private elementUpdateListeners: Array<(element: DrawElement) => void> = [];
+
+  public addSelectionChangeListener(callback: (element: DrawElement | null) => void): void {
+    this.selectionChangeListeners.push(callback);
+  }
+
+  public addElementUpdateListener(callback: (element: DrawElement) => void): void {
+    this.elementUpdateListeners.push(callback);
+  }
+
+  private notifySelectionChange(element: DrawElement | null): void {
+    this.selectionChangeListeners.forEach(callback => callback(element));
+  }
+
+  private notifyElementUpdate(element: DrawElement): void {
+    this.elementUpdateListeners.forEach(callback => callback(element));
+  }
+
+  // Legacy support - keep these for backward compatibility but deprecate
   public onSelectionChange?: (element: DrawElement | null) => void;
   public onElementUpdate?: (element: DrawElement) => void;
 }

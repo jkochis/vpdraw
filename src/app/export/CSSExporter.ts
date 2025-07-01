@@ -1,5 +1,5 @@
 import { ElementManager } from '../elements/ElementManager';
-import type { DrawElement, ElementProperties } from '../elements/ElementManager';
+import type { DrawElement } from '../elements/ElementManager';
 import { ViewportManager } from '../viewport/ViewportManager';
 import { ViewportPresets } from '../viewport/ViewportPresets';
 
@@ -23,13 +23,14 @@ export class CSSExporter {
   }
 
   private setupEventListeners(): void {
-    this.elementManager.onElementUpdate = () => {
+    // Use the new listener system instead of overwriting the callback
+    this.elementManager.addElementUpdateListener(() => {
       this.updateCSS();
-    };
+    });
 
-    this.elementManager.onSelectionChange = () => {
+    this.elementManager.addSelectionChangeListener(() => {
       this.updateCSS();
-    };
+    });
   }
 
   public updateCSS(): void {
@@ -61,23 +62,6 @@ export class CSSExporter {
 
 `;
 
-    // Add comment about custom class names
-    const customClassNames = elements
-      .filter(el => el.properties.className && !el.properties.className.startsWith('rectangle-') && !el.properties.className.startsWith('element-'))
-      .map(el => el.properties.className);
-    
-    const customIds = elements
-      .filter(el => el.properties.customId)
-      .map(el => el.properties.customId);
-    
-    if (customClassNames.length > 0) {
-      css += `\n/* Custom class names used: ${customClassNames.join(', ')} */`;
-    }
-    
-    if (customIds.length > 0) {
-      css += `\n/* Custom IDs used: ${customIds.join(', ')} */`;
-    }
-
     elements.forEach(element => {
       css += this.generateElementCSS(element);
       css += '\n';
@@ -89,25 +73,8 @@ export class CSSExporter {
   private generateElementCSS(element: DrawElement): string {
     const { properties, type } = element;
     const className = properties.className || `element-${element.id}`;
-    const customId = properties.customId;
     
-    // Generate CSS for class selector
     let css = `.${className} {\n`;
-    css += this.generateCSSProperties(properties, type);
-    css += `}\n`;
-    
-    // If there's a custom ID, also generate ID selector CSS
-    if (customId) {
-      css += `\n#${customId} {\n`;
-      css += this.generateCSSProperties(properties, type);
-      css += `}`;
-    }
-    
-    return css;
-  }
-
-  private generateCSSProperties(properties: ElementProperties, type: string): string {
-    let css = '';
     
     // Position and size using viewport units
     css += `  position: absolute;\n`;
@@ -131,6 +98,8 @@ export class CSSExporter {
     // Box model
     css += `  box-sizing: border-box;\n`;
     
+    css += `}`;
+    
     return css;
   }
 
@@ -144,10 +113,12 @@ export class CSSExporter {
     elements.forEach(element => {
       const { properties, type } = element;
       const className = properties.className || `element-${element.id}`;
-      const customId = properties.customId ? ` id="${properties.customId}"` : '';
       
       if (type === 'rectangle') {
-        html += `  <div class="${className}"${customId}></div>\n`;
+        html += `  <div class="${className}"></div>\n`;
+      } else if (type === 'text') {
+        const text = properties.text || 'Text Element';
+        html += `  <div class="${className}">${text}</div>\n`;
       }
     });
     

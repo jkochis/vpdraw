@@ -25,13 +25,14 @@ export class PropertiesPanel {
     }
 
     private setupEventListeners(): void {
-        this.elementManager.onSelectionChange = (element) => {
+        // Use the new listener system instead of overwriting the callback
+        this.elementManager.addSelectionChangeListener((element) => {
             this.updatePropertiesPanel(element);
-        };
+        });
 
-        this.elementManager.onElementUpdate = (element) => {
+        this.elementManager.addElementUpdateListener((element) => {
             this.updatePropertiesPanel(element);
-        };
+        });
     }
 
     private updatePropertiesPanel(element: DrawElement | null): void {
