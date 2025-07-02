@@ -63,8 +63,8 @@ export class PropertiesPanel {
         this.propertiesContainer.innerHTML = '';
 
         // Create and add properties header
-        const header = document.createElement('properties-header');
-        this.propertiesContainer.appendChild(header);
+        // const header = document.createElement('properties-header');
+        // this.propertiesContainer.appendChild(header);
 
         // Create identity group
         const identityGroup = document.createElement('property-group');
