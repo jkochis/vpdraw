@@ -5,7 +5,7 @@ export class PropertyGroupComponent extends HTMLElement {
   private titleElement: HTMLElement;
   private contentElement: HTMLElement;
   private toggleIcon: HTMLElement;
-  private isCollapsed = false;
+  private isCollapsed = true;
 
   constructor() {
     super();
@@ -19,6 +19,9 @@ export class PropertyGroupComponent extends HTMLElement {
     this.titleElement = shadowRoot.querySelector('.group-title')!;
     this.contentElement = shadowRoot.querySelector('.group-content')!;
     this.toggleIcon = shadowRoot.querySelector('.toggle-icon')!;
+    
+    // Start collapsed by default
+    this.setAttribute('collapsed', '');
     
     // Add click handler for toggling
     shadowRoot.querySelector('.group-header')!.addEventListener('click', () => {
